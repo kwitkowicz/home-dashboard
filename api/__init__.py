@@ -2,10 +2,13 @@ import os
 
 from flask import Flask
 from flask_mqtt import Mqtt
+from flask_migrate import Migrate
 
 from config import Config
+from extensions import db
 
 mqtt_client = Mqtt()
+migrate = Migrate()
 
 
 def create_app(config_class=Config):
@@ -13,6 +16,12 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     mqtt_client.init_app(app)
+
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
+    migrate.init_app(app, db)
 
     try:
         os.makedirs(app.instance_path)

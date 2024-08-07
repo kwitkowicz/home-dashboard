@@ -16,3 +16,6 @@ class Config(object):
     """This server-side CA is public available on emqx website"""
     MQTT_TLS_CA_CERTS = 'api/mqtt/certs/emqxsl-ca.crt'
     MQTT_TLS_VERSION = ssl.PROTOCOL_TLSv1_2
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
