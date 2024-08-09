@@ -16,13 +16,12 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    mqtt_client.init_app(app)
-
     db.init_app(app)
     with app.app_context():
         db.create_all()
         db.session.commit()
-    migrate.init_app(app, db)
+        migrate.init_app(app, db)
+        mqtt_client.init_app(app)
 
     try:
         os.makedirs(app.instance_path)
