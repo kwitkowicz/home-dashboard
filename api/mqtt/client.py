@@ -26,37 +26,44 @@ def handle_mqtt_message(client, userdata, message):
         topic=message.topic,
         payload=message.payload.decode()
     )
+
+    #print('Received message on topic: {topic} with payload: {payload}'.format(**data))
     parse_message(message.payload)
-    # print('Received message on topic: {topic} with payload: {payload}'.format(**data))
 
 
 def parse_message(payload):
-    payload_dict = json.loads(payload)
+    try:
+        payload_dict = json.loads(payload)
+        mac_address = payload_dict['d']
+        measurements_list = payload_dict['m']
 
-    mac_address = payload_dict['d']
-    measurements_list = payload_dict['m']
+        for measurement_dict in measurements_list:
+            sensor_type = measurement_dict['ty']
+            measurement_date = measurement_dict['dt']
 
-    for measurement_dict in measurements_list:
-        sensor_type = measurement_dict['ty']
-        measurement_date = measurement_dict['dt']
+            with (mqtt_client.app.app_context()):
+                try:
+                    q = db.session.query(sensor.Sensor, sensor.SensorType, device.Device
+                                         ).join(sensor.SensorType
+                                                ).join(device.Device
+                                                       ).filter(sensor.SensorType.sensor_type == sensor_type
+                                                                ).filter(device.Device.mac_address == mac_address
+                                                                         ).one()
+                    sensor_id = q[0].id
 
-        with (mqtt_client.app.app_context()):
-            try:
-                q = db.session.query(sensor.Sensor, sensor.SensorType, device.Device
-                                    ).join(sensor.SensorType
-                                    ).join(device.Device
-                                    ).filter(sensor.SensorType.sensor_type == sensor_type
-                                    ).filter(device.Device.mac_address == mac_address
-                                    ).one()
-                sensor_id = q[0].id
-
-                temp = measurements.Temperature(sensor_id=sensor_id,
+                    temp = measurements.Temperature(sensor_id=sensor_id,
+                                                    date=measurement_date,
+                                                    value=measurement_dict['t'])
+                    hum = measurements.Humidity(sensor_id=sensor_id,
                                                 date=measurement_date,
-                                                value=measurement_dict['t'])
-                hum = measurements.Humidity(sensor_id=sensor_id,
-                                            date=measurement_date,
-                                            value=measurement_dict['h'])
-                db.session.add_all([temp, hum])
-                db.session.commit()
-            except sqlalchemy.exc.NoResultFound:
-                pass
+                                                value=measurement_dict['h'])
+                    db.session.add_all([temp, hum])
+                    db.session.commit()
+                except sqlalchemy.exc.NoResultFound:
+                    pass
+    except (json.decoder.JSONDecodeError, UnboundLocalError) as e:
+        pass
+
+
+
+
