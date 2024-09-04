@@ -1,8 +1,8 @@
 import sqlalchemy.exc
 from flask import Blueprint
 
-from api import mqtt_client
 from api.extensions import db
+from api.extensions import mqtt_client
 
 from api.models import device, sensor, measurements
 import json

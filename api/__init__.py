@@ -5,10 +5,10 @@ from flask_mqtt import Mqtt
 from flask_migrate import Migrate
 
 from config import Config
-from api.extensions import db
+from api.extensions import db, mqtt_client
 from api.models import device, sensor, measurements
 
-mqtt_client = Mqtt()
+
 migrate = Migrate()
 
 
