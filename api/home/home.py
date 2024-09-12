@@ -18,6 +18,7 @@ def about():
 def test():
     return render_template('under_construction.html', page_name='Test')
 
+
 @home_bp.route('/privacy')
 def privacy():
     return render_template('under_construction.html', page_name='Privacy')
@@ -26,6 +27,3 @@ def privacy():
 @home_bp.route('/termsofservice')
 def termsofservice():
     return render_template('under_construction.html', page_name='Terms of service')
-
-
-#TODO about, license

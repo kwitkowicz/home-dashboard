@@ -42,4 +42,8 @@ def create_app(config_class=Config):
     def url_not_found(error):
         return render_template('404.html'), 404
 
+    @app.errorhandler(403)
+    def access_forbidden(error):
+        return render_template('403.html'), 403
+
     return app
