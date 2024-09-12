@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block metatags %}
+<title>Dashboard</title>
+<meta name="description" content="Minimal.">
+{% endblock %}
+
+{% block contents %}
+<div class="container">
+    <h1 style="margin-top:37px;">Home page</h1>
+    {% if current_user.is_authenticated %}
+    <p class="lead">Welcome <span class="fw-bold">{{ current_user.username }}</span>.</p>
+    {% else %}
+    <p class="lead">Please log in to get access.</p>
+    {% endif %}
+    <p>Learn more <a href="{{url_for('home_bp.about')}}">about</a> this site.</p>
+</div>
+{% endblock %}

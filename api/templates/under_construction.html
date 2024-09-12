@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block metatags %}
+<title>Under construcition</title>
+<meta name="description" content="Minimal.">
+{% endblock %}
+
+{% block contents %}
+<div class="container">
+    <h1 style="margin-top:37px;">Under contruction</h1>
+    <p class="lead">The page <code>{{page_name}}</code> is under construction.</p>
+    <p><a href="{{url_for('home_bp.index')}}"><i class="bi bi-arrow-left-circle me-1"></i> Return to the main page</a>.
+    </p>
+</div>
+{% endblock %}
