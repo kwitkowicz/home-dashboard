@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.extensions import db
 from api.models import user
+from api.decorators import access_forbidden
 
 auth_bp = Blueprint('auth_bp', __name__, template_folder='templates')
 
@@ -38,6 +39,7 @@ def signup():
 
 
 @auth_bp.route('/signup', methods=['POST'])
+@access_forbidden
 def signup_post():
     name = request.form.get('username')
     email = request.form.get('email')
