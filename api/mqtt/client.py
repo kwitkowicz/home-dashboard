@@ -1,4 +1,5 @@
 import sqlalchemy.exc
+import datetime
 from flask import Blueprint
 
 from api.extensions import db
@@ -40,6 +41,8 @@ def parse_message(payload):
         for measurement_dict in measurements_list:
             sensor_type = measurement_dict['ty']
             measurement_date = measurement_dict['dt']
+            measurement_date = datetime.datetime.strptime(measurement_date, "%d-%m-%Y %H:%M:%S").strftime(
+                "%Y-%m-%d %H:%M:%S")
 
             with (mqtt_client.app.app_context()):
                 try:
